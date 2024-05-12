@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowKhgmaS.ui'
+## Form generated from reading UI file 'main_windowSgtFpe.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -32,34 +32,41 @@ class Ui_MainWindow(object):
         self.widget.setObjectName(u"widget")
         self.verticalLayout_4 = QVBoxLayout(self.widget)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verify_pushButton = QPushButton(self.widget)
-        self.verify_pushButton.setObjectName(u"verify_pushButton")
+        self.verify_pushbutton = QPushButton(self.widget)
+        self.verify_pushbutton.setObjectName(u"verify_pushbutton")
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.verify_pushButton.sizePolicy().hasHeightForWidth())
-        self.verify_pushButton.setSizePolicy(sizePolicy)
-        self.verify_pushButton.setMinimumSize(QSize(150, 50))
-        self.verify_pushButton.setLayoutDirection(Qt.LeftToRight)
-        self.verify_pushButton.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
+        sizePolicy.setHeightForWidth(self.verify_pushbutton.sizePolicy().hasHeightForWidth())
+        self.verify_pushbutton.setSizePolicy(sizePolicy)
+        self.verify_pushbutton.setMinimumSize(QSize(150, 50))
+        font = QFont()
+        font.setPointSize(12)
+        self.verify_pushbutton.setFont(font)
+        self.verify_pushbutton.setLayoutDirection(Qt.LeftToRight)
+        self.verify_pushbutton.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 
-        self.verticalLayout_4.addWidget(self.verify_pushButton, 0, Qt.AlignHCenter)
+        self.verticalLayout_4.addWidget(self.verify_pushbutton, 0, Qt.AlignHCenter)
 
-        self.register_pushButton = QPushButton(self.widget)
-        self.register_pushButton.setObjectName(u"register_pushButton")
-        sizePolicy.setHeightForWidth(self.register_pushButton.sizePolicy().hasHeightForWidth())
-        self.register_pushButton.setSizePolicy(sizePolicy)
-        self.register_pushButton.setMinimumSize(QSize(150, 50))
+        self.register_pushbutton = QPushButton(self.widget)
+        self.register_pushbutton.setObjectName(u"register_pushbutton")
+        sizePolicy.setHeightForWidth(self.register_pushbutton.sizePolicy().hasHeightForWidth())
+        self.register_pushbutton.setSizePolicy(sizePolicy)
+        self.register_pushbutton.setMinimumSize(QSize(150, 50))
+        self.register_pushbutton.setFont(font)
+        self.register_pushbutton.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 
-        self.verticalLayout_4.addWidget(self.register_pushButton, 0, Qt.AlignHCenter)
+        self.verticalLayout_4.addWidget(self.register_pushbutton, 0, Qt.AlignHCenter)
 
-        self.registered_pushButton = QPushButton(self.widget)
-        self.registered_pushButton.setObjectName(u"registered_pushButton")
-        sizePolicy.setHeightForWidth(self.registered_pushButton.sizePolicy().hasHeightForWidth())
-        self.registered_pushButton.setSizePolicy(sizePolicy)
-        self.registered_pushButton.setMinimumSize(QSize(150, 50))
+        self.registered_pushbutton = QPushButton(self.widget)
+        self.registered_pushbutton.setObjectName(u"registered_pushbutton")
+        sizePolicy.setHeightForWidth(self.registered_pushbutton.sizePolicy().hasHeightForWidth())
+        self.registered_pushbutton.setSizePolicy(sizePolicy)
+        self.registered_pushbutton.setMinimumSize(QSize(150, 50))
+        self.registered_pushbutton.setFont(font)
+        self.registered_pushbutton.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 
-        self.verticalLayout_4.addWidget(self.registered_pushButton, 0, Qt.AlignHCenter)
+        self.verticalLayout_4.addWidget(self.registered_pushbutton, 0, Qt.AlignHCenter)
 
 
         self.horizontalLayout_4.addWidget(self.widget)
@@ -67,7 +74,8 @@ class Ui_MainWindow(object):
         self.camera_frame = QFrame(self.centralwidget)
         self.camera_frame.setObjectName(u"camera_frame")
         self.camera_frame.setBaseSize(QSize(0, 0))
-        self.camera_frame.setFrameShape(QFrame.NoFrame)
+        self.camera_frame.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
+        self.camera_frame.setFrameShape(QFrame.StyledPanel)
         self.horizontalLayout = QHBoxLayout(self.camera_frame)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.camera_label = QLabel(self.camera_frame)
@@ -79,13 +87,15 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.camera_label.sizePolicy().hasHeightForWidth())
         self.camera_label.setSizePolicy(sizePolicy1)
         self.camera_label.setMinimumSize(QSize(640, 360))
+        self.camera_label.setFrameShape(QFrame.NoFrame)
         self.camera_label.setText(u"")
         self.camera_label.setTextFormat(Qt.PlainText)
+        self.camera_label.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout.addWidget(self.camera_label)
+        self.horizontalLayout.addWidget(self.camera_label, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
 
-        self.horizontalLayout_4.addWidget(self.camera_frame)
+        self.horizontalLayout_4.addWidget(self.camera_frame, 0, Qt.AlignHCenter)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -103,8 +113,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.verify_pushButton.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
-        self.register_pushButton.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
-        self.registered_pushButton.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
+        self.verify_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Verify", None))
+        self.register_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Register", None))
+        self.registered_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Registered folder", None))
     # retranslateUi
 

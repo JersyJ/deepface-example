@@ -19,7 +19,7 @@
      <widget class="QWidget" name="widget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item alignment="Qt::AlignHCenter">
-        <widget class="QPushButton" name="verify_pushButton">
+        <widget class="QPushButton" name="verify_pushbutton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -31,6 +31,11 @@
            <width>150</width>
            <height>50</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -39,12 +44,12 @@
           <locale language="English" country="UnitedStates"/>
          </property>
          <property name="text">
-          <string>PushButton</string>
+          <string>Verify</string>
          </property>
         </widget>
        </item>
        <item alignment="Qt::AlignHCenter">
-        <widget class="QPushButton" name="register_pushButton">
+        <widget class="QPushButton" name="register_pushbutton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -57,13 +62,21 @@
            <height>50</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="locale">
+          <locale language="English" country="UnitedStates"/>
+         </property>
          <property name="text">
-          <string>PushButton</string>
+          <string>Register</string>
          </property>
         </widget>
        </item>
        <item alignment="Qt::AlignHCenter">
-        <widget class="QPushButton" name="registered_pushButton">
+        <widget class="QPushButton" name="registered_pushbutton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -76,15 +89,23 @@
            <height>50</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="locale">
+          <locale language="English" country="UnitedStates"/>
+         </property>
          <property name="text">
-          <string>PushButton</string>
+          <string>Registered folder</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item>
+    <item alignment="Qt::AlignHCenter">
      <widget class="QFrame" name="camera_frame">
       <property name="baseSize">
        <size>
@@ -92,11 +113,14 @@
         <height>0</height>
        </size>
       </property>
+      <property name="locale">
+       <locale language="English" country="UnitedStates"/>
+      </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::StyledPanel</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
+       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
         <widget class="QLabel" name="camera_label">
          <property name="enabled">
           <bool>true</bool>
@@ -113,11 +137,17 @@
            <height>360</height>
           </size>
          </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="text">
           <string notr="true"/>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>

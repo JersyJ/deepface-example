@@ -1,0 +1,6 @@
+isort
+black
+pylint
+ruff
+pyqt6-tools
+-r requirements.txt
