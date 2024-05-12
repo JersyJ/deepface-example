@@ -1,6 +1,7 @@
 import logging
 import sys
 from dataclasses import dataclass
+from enum import Enum
 
 import cv2
 import numpy as np
@@ -12,8 +13,17 @@ from deepface import DeepFace
 from deepface.modules import streaming
 from ui.main_window import Ui_MainWindow
 
-FPS: int = int(1000 / 25)
+FPS: int = 20
+INTERVAL: int = int(1000 / FPS)
 DATABASE_PATH: str = "database"
+
+REGISTER_FPS: int = 30
+REGISTER_INTERVAL: int = int(1000 / FPS)
+
+
+class VerifyButton(Enum):
+    NOT_VERIFYING = 0
+    VERIFYING = 1
 
 
 @dataclass
@@ -41,7 +51,6 @@ class DeepFaceHelper:
         self.source = source
         self.frame_threshold = frame_threshold
         self.cap = cv2.VideoCapture(self.source + cv2.CAP_DSHOW)  # webcam (default 0)
-        self.face_found = False
         self.num_frames_with_faces = 0
 
     def face_analysis(self) -> None:
@@ -57,12 +66,7 @@ class DeepFaceHelper:
             model_name=self.model_name,
         )
 
-        self.face_found = False
-
-        window.face_analysis_timer.timeout.connect(self.capture_camera_and_analyze_face)
-        window.face_analysis_timer.start(FPS)
-
-    def capture_camera_and_analyze_face(self) -> None:
+    def capture_camera_and_analyze_face(self, face_found: bool) -> None:
         """
         Capture camera and analyze face
         """
@@ -73,7 +77,7 @@ class DeepFaceHelper:
 
         raw_img = img.copy()
 
-        if not self.face_found:
+        if not face_found:
             faces_coordinates = streaming.grab_facial_areas(
                 img, detector_backend=self.detector_backend
             )
@@ -89,11 +93,11 @@ class DeepFaceHelper:
                 self.num_frames_with_faces + 1 if len(faces_coordinates) else 0
             )
 
-            self.face_found = (
+            face_found = (
                     self.num_frames_with_faces > 0
                     and self.num_frames_with_faces % self.frame_threshold == 0
             )
-            if self.face_found:
+            if face_found:
                 # add analyze results into img - derive from raw_img
                 img = streaming.highlight_facial_areas(
                     img=raw_img, faces_coordinates=faces_coordinates
@@ -111,11 +115,11 @@ class DeepFaceHelper:
 
                 if not identity:
                     logging.info("No identity found.")
-                    self.face_found = False
+                    face_found = False
                     self.num_frames_with_faces = 0
                 else:
                     img = identity.identified_image
-                    window.face_analysis_timer.stop()
+                    window.stop_verify_identified()
                     QTimer.singleShot(
                         200, lambda: window.show_opencv_img(img)
                     )  # Ensure that right image is shown (QTimer act asynchronously)
@@ -266,6 +270,15 @@ class DeepFaceHelper:
 
         return identity_result
 
+    def capture_camera(self):
+        has_frame, img = self.cap.read()
+        if not has_frame:
+            logging.error("Could not read frame from camera")
+
+        window.show_opencv_img(img)
+
+    def register_face(self):
+        pass
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -273,19 +286,60 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.verify_pushbutton.clicked.connect(self.verify_pushbutton_click)
-        self.ui.camera_label.setPixmap(
-            QPixmap("./ui/resources/deepface-icon-labeled.png")
-        )
-
+        self.ui.register_pushbutton.clicked.connect(self.register_pushbutton_click)
+        self.reset_camera_label()
         self.face_analysis_timer = QTimer(self)
+        self.face_analysis_timer.timeout.connect(
+            lambda: self.deep_face_helper.capture_camera_and_analyze_face(False)
+        )
+        self.register_timer = QTimer(self)
+        self.register_timer.timeout.connect(
+            lambda: self.deep_face_helper.capture_camera
+        )
         self.deep_face_helper = DeepFaceHelper(DATABASE_PATH)
-
-    def verify_pushbutton_click(self):
-        self.deep_face_helper.face_analysis()
+        self.verify_state = VerifyButton.NOT_VERIFYING
 
     def show_opencv_img(self, img):
         convert = QImage(img, img.shape[1], img.shape[0], QImage.Format.Format_BGR888)
         self.ui.camera_label.setPixmap(QPixmap.fromImage(convert))
+
+    def reset_verify_button(self):
+        self.ui.verify_pushbutton.setText("Verify")
+        self.ui.verify_pushbutton.setStyleSheet('QPushButton {color: white;}')
+
+    def reset_camera_label(self):
+        self.ui.camera_label.setPixmap(
+            QPixmap("./ui/resources/deepface-icon-labeled.png")
+        )
+
+    def start_verify_manually(self):
+        self.deep_face_helper.face_analysis()
+
+        self.face_analysis_timer.start(INTERVAL)
+
+        self.verify_state = VerifyButton.VERIFYING
+        self.ui.verify_pushbutton.setText("Cancel Verification")
+        self.ui.verify_pushbutton.setStyleSheet('QPushButton {color: yellow;}')
+
+    def stop_verify_identified(self):
+        self.face_analysis_timer.stop()
+        self.verify_state = VerifyButton.NOT_VERIFYING
+        self.reset_verify_button()
+
+    def stop_verify_manually(self):
+        self.face_analysis_timer.stop()
+        self.verify_state = VerifyButton.NOT_VERIFYING
+        self.reset_verify_button()
+        self.reset_camera_label()
+
+    def verify_pushbutton_click(self):
+        if self.verify_state == VerifyButton.NOT_VERIFYING:
+            self.start_verify_manually()
+        elif self.verify_state == VerifyButton.VERIFYING:
+            self.stop_verify_manually()
+
+    def register_pushbutton_click(self):
+        self.register_timer.start(REGISTER_INTERVAL)
 
 
 if __name__ == "__main__":
