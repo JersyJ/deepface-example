@@ -33,10 +33,11 @@ class DeepFaceHelper():
         self.source = source
         self.frame_threshold = frame_threshold
         self.cap = cv2.VideoCapture(self.source)  # webcam (default 0)
+        self.num_frames_with_faces = 0
 
     def face_analysis(self) -> None:
         streaming.build_facial_recognition_model(model_name=self.model_name)
-        #
+
         # call a dummy find function for db_path once to create embeddings before starting webcam
         _ = streaming.search_identity(
             detected_face=np.zeros([224, 224, 3]),
@@ -49,9 +50,10 @@ class DeepFaceHelper():
         face_found_img = None
         face_found = False
 
+
         window.face_analysis_timer.timeout.connect(
             lambda: self.capture_camera_and_analyze_face(face_found_img, face_found))
-        window.face_analysis_timer.start(100)
+        window.face_analysis_timer.start(200)
 
     def capture_camera_and_analyze_face(self, face_found_img, face_found: bool) -> None:
         """
@@ -62,13 +64,34 @@ class DeepFaceHelper():
             logging.error("Could not read frame from camera")
             return
 
-        window.show_opencv_img(img)
+        raw_img = img.copy()
 
-        # raw_img = img.copy()
-        #
-        # if not face_found:
-        #     faces_coordinates = streaming.grab_facial_areas(img, detector_backend=detector_backend)
-        #
+        if not face_found:
+            faces_coordinates = streaming.grab_facial_areas(img, detector_backend=self.detector_backend)
+
+            detected_faces = streaming.extract_facial_areas(img=img, faces_coordinates=faces_coordinates)
+            img = streaming.highlight_facial_areas(img=img, faces_coordinates=faces_coordinates)
+
+            self.num_frames_with_faces = self.num_frames_with_faces + 1 if len(faces_coordinates) else 0
+
+            face_found = self.num_frames_with_faces > 0 and self.num_frames_with_faces % self.frame_threshold == 0
+            if face_found:
+                # add analyze results into img - derive from raw_img
+                img = streaming.highlight_facial_areas(img=raw_img, faces_coordinates=faces_coordinates)
+
+                img = streaming.perform_facial_recognition(
+                    img=img,
+                    faces_coordinates=faces_coordinates,
+                    detected_faces=detected_faces,
+                    db_path=self.db_path,
+                    detector_backend=self.detector_backend,
+                    distance_metric=self.distance_metric,
+                    model_name=self.model_name,
+                )
+
+                window.face_analysis_timer.stop()
+
+        window.show_opencv_img(img)
 
 
 class MainWindow(QMainWindow):
@@ -84,13 +107,8 @@ class MainWindow(QMainWindow):
         self.deep_face_helper.face_analysis()
 
     def show_opencv_img(self, img):
-        convert = QImage(img, img.shape[1], img.shape[0], img.strides[0], QImage.Format.Format_BGR888)
+        convert = QImage(img, img.shape[1], img.shape[0], QImage.Format.Format_BGR888)
         self.ui.camera_label.setPixmap(QPixmap.fromImage(convert))
-
-
-def main() -> None:
-    #DeepFace.stream("database", enable_face_analysis=False)
-    pass
 
 
 if __name__ == "__main__":
