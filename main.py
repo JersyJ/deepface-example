@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 from dataclasses import dataclass
 from enum import Enum
@@ -21,9 +22,13 @@ REGISTER_FPS: int = 30
 REGISTER_INTERVAL: int = int(1000 / FPS)
 
 
-class VerifyButton(Enum):
-    NOT_VERIFYING = 0
-    VERIFYING = 1
+# TODO - Add info about verified in status bar
+# TODO - Register face (buttons to shot image) + save image in database with form?
+
+
+class ButtonState(Enum):
+    INACTIVE = 0
+    ACTIVE = 1
 
 
 @dataclass
@@ -280,6 +285,7 @@ class DeepFaceHelper:
     def register_face(self):
         pass
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -287,17 +293,17 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.ui.verify_pushbutton.clicked.connect(self.verify_pushbutton_click)
         self.ui.register_pushbutton.clicked.connect(self.register_pushbutton_click)
+        self.ui.registered_pushbutton.clicked.connect(self.registered_pushbutton_click)
         self.reset_camera_label()
+        self.deep_face_helper = DeepFaceHelper(DATABASE_PATH)
         self.face_analysis_timer = QTimer(self)
         self.face_analysis_timer.timeout.connect(
             lambda: self.deep_face_helper.capture_camera_and_analyze_face(False)
         )
         self.register_timer = QTimer(self)
-        self.register_timer.timeout.connect(
-            lambda: self.deep_face_helper.capture_camera
-        )
-        self.deep_face_helper = DeepFaceHelper(DATABASE_PATH)
-        self.verify_state = VerifyButton.NOT_VERIFYING
+        self.register_timer.timeout.connect(self.deep_face_helper.capture_camera)
+        self.verify_state = ButtonState.INACTIVE
+        self.register_state = ButtonState.INACTIVE
 
     def show_opencv_img(self, img):
         convert = QImage(img, img.shape[1], img.shape[0], QImage.Format.Format_BGR888)
@@ -306,6 +312,10 @@ class MainWindow(QMainWindow):
     def reset_verify_button(self):
         self.ui.verify_pushbutton.setText("Verify")
         self.ui.verify_pushbutton.setStyleSheet('QPushButton {color: white;}')
+
+    def reset_register_button(self):
+        self.ui.register_pushbutton.setText("Register")
+        self.ui.register_pushbutton.setStyleSheet('QPushButton {color: white;}')
 
     def reset_camera_label(self):
         self.ui.camera_label.setPixmap(
@@ -317,29 +327,41 @@ class MainWindow(QMainWindow):
 
         self.face_analysis_timer.start(INTERVAL)
 
-        self.verify_state = VerifyButton.VERIFYING
+        self.verify_state = ButtonState.ACTIVE
         self.ui.verify_pushbutton.setText("Cancel Verification")
         self.ui.verify_pushbutton.setStyleSheet('QPushButton {color: yellow;}')
 
     def stop_verify_identified(self):
         self.face_analysis_timer.stop()
-        self.verify_state = VerifyButton.NOT_VERIFYING
+        self.verify_state = ButtonState.INACTIVE
         self.reset_verify_button()
 
     def stop_verify_manually(self):
         self.face_analysis_timer.stop()
-        self.verify_state = VerifyButton.NOT_VERIFYING
+        self.verify_state = ButtonState.INACTIVE
         self.reset_verify_button()
         self.reset_camera_label()
 
     def verify_pushbutton_click(self):
-        if self.verify_state == VerifyButton.NOT_VERIFYING:
+        if self.verify_state == ButtonState.INACTIVE:
             self.start_verify_manually()
-        elif self.verify_state == VerifyButton.VERIFYING:
+        elif self.verify_state == ButtonState.ACTIVE:
             self.stop_verify_manually()
 
     def register_pushbutton_click(self):
-        self.register_timer.start(REGISTER_INTERVAL)
+        if self.register_state == ButtonState.INACTIVE:
+            self.register_timer.start(REGISTER_INTERVAL)
+            self.register_state = ButtonState.ACTIVE
+            self.ui.register_pushbutton.setText("Stop camera")
+            self.ui.register_pushbutton.setStyleSheet('QPushButton {color: red;}')
+        elif self.register_state == ButtonState.ACTIVE:
+            self.register_timer.stop()
+            self.reset_camera_label()
+            self.register_state = ButtonState.INACTIVE
+            self.reset_register_button()
+
+    def registered_pushbutton_click(self):
+        os.startfile(DATABASE_PATH)
 
 
 if __name__ == "__main__":
