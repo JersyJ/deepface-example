@@ -9,16 +9,7 @@ from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QApplication, QMainWindow
 
 from deepface import DeepFace
-from deepface.modules import (
-    demography,
-    detection,
-    modeling,
-    preprocessing,
-    recognition,
-    representation,
-    streaming,
-    verification,
-)
+from deepface.modules import streaming
 from ui.main_window import Ui_MainWindow
 
 FPS: int = int(1000 / 25)
@@ -28,20 +19,20 @@ DATABASE_PATH: str = "database"
 @dataclass
 class IdentityResult:
     identified_image_path: str
-    identified_image: np.ndarray
+    identified_image: np.ndarray | None
     distance: float
     threshold: float
 
 
 class DeepFaceHelper:
     def __init__(
-        self,
-        db_path,
-        model_name="VGG-Face",
-        detector_backend="opencv",
-        distance_metric="cosine",
-        source=0,
-        frame_threshold=30,
+            self,
+            db_path,
+            model_name="VGG-Face",
+            detector_backend="opencv",
+            distance_metric="cosine",
+            source=0,
+            frame_threshold=30,
     ):
         self.db_path = db_path
         self.model_name = model_name
@@ -50,13 +41,15 @@ class DeepFaceHelper:
         self.source = source
         self.frame_threshold = frame_threshold
         self.cap = cv2.VideoCapture(self.source + cv2.CAP_DSHOW)  # webcam (default 0)
+        self.face_found = False
         self.num_frames_with_faces = 0
 
     def face_analysis(self) -> None:
         streaming.build_facial_recognition_model(model_name=self.model_name)
 
         # call a dummy find function for db_path once to create embeddings before start capturing
-        _ = streaming.search_identity(
+        _ = DeepFaceHelper.search_identity_details(
+
             detected_face=np.zeros([224, 224, 3]),  # random numbers
             db_path=self.db_path,
             detector_backend=self.detector_backend,
@@ -64,14 +57,12 @@ class DeepFaceHelper:
             model_name=self.model_name,
         )
 
-        face_found = False
+        self.face_found = False
 
-        window.face_analysis_timer.timeout.connect(
-            lambda: self.capture_camera_and_analyze_face(face_found)
-        )
+        window.face_analysis_timer.timeout.connect(self.capture_camera_and_analyze_face)
         window.face_analysis_timer.start(FPS)
 
-    def capture_camera_and_analyze_face(self, face_found: bool) -> None:
+    def capture_camera_and_analyze_face(self) -> None:
         """
         Capture camera and analyze face
         """
@@ -82,7 +73,7 @@ class DeepFaceHelper:
 
         raw_img = img.copy()
 
-        if not face_found:
+        if not self.face_found:
             faces_coordinates = streaming.grab_facial_areas(
                 img, detector_backend=self.detector_backend
             )
@@ -98,17 +89,17 @@ class DeepFaceHelper:
                 self.num_frames_with_faces + 1 if len(faces_coordinates) else 0
             )
 
-            face_found = (
-                self.num_frames_with_faces > 0
-                and self.num_frames_with_faces % self.frame_threshold == 0
+            self.face_found = (
+                    self.num_frames_with_faces > 0
+                    and self.num_frames_with_faces % self.frame_threshold == 0
             )
-            if face_found:
+            if self.face_found:
                 # add analyze results into img - derive from raw_img
                 img = streaming.highlight_facial_areas(
                     img=raw_img, faces_coordinates=faces_coordinates
                 )
 
-                img = self.perform_facial_recognition_details(
+                identity = self.perform_facial_recognition_details(
                     img=img,
                     faces_coordinates=faces_coordinates,
                     detected_faces=detected_faces,
@@ -118,20 +109,26 @@ class DeepFaceHelper:
                     model_name=self.model_name,
                 )
 
-                window.face_analysis_timer.stop()
-                QTimer.singleShot(
-                    200, lambda: window.show_opencv_img(img)
-                )  # Ensure that right image is shown (QTimer act asynchronously)
+                if not identity:
+                    logging.info("No identity found.")
+                    self.face_found = False
+                    self.num_frames_with_faces = 0
+                else:
+                    img = identity.identified_image
+                    window.face_analysis_timer.stop()
+                    QTimer.singleShot(
+                        200, lambda: window.show_opencv_img(img)
+                    )  # Ensure that right image is shown (QTimer act asynchronously)
 
         window.show_opencv_img(img)
 
     @staticmethod
     def search_identity_details(
-        detected_face: np.ndarray,
-        db_path: str,
-        model_name: str,
-        detector_backend: str,
-        distance_metric: str,
+            detected_face: np.ndarray,
+            db_path: str,
+            model_name: str,
+            detector_backend: str,
+            distance_metric: str,
     ) -> IdentityResult | None:
         """
         Search an identity in facial database.
@@ -149,7 +146,6 @@ class DeepFaceHelper:
         Returns:
             identity_result (IdentityResult): identified image path, identified image, distance and threshold
         """
-        target_path = None
         try:
             dfs = DeepFace.find(
                 img_path=detected_face,
@@ -213,15 +209,15 @@ class DeepFaceHelper:
         return identity_result
 
     def perform_facial_recognition_details(
-        self,
-        img,
-        faces_coordinates,
-        detected_faces,
-        db_path=None,
-        detector_backend=None,
-        distance_metric=None,
-        model_name=None,
-    ):
+            self,
+            img,
+            faces_coordinates,
+            detected_faces,
+            db_path=None,
+            detector_backend=None,
+            distance_metric=None,
+            model_name=None,
+    ) -> IdentityResult | None:
         """
         Perform facial recognition
         Args:
@@ -239,7 +235,7 @@ class DeepFaceHelper:
             model_name (str): Model for face recognition. Options: VGG-Face, Facenet, Facenet512,
                 OpenFace, DeepFace, DeepID, Dlib, ArcFace, SFace and GhostFaceNet (default is VGG-Face).
         Returns:
-            img (np.ndarray): image with identified face informations
+            identity_result (Identity Result) | None: identified image path, identified image, distance and threshold
         """
         db_path = db_path or self.db_path
         detector_backend = detector_backend or self.detector_backend
@@ -255,10 +251,10 @@ class DeepFaceHelper:
                 distance_metric=distance_metric,
                 model_name=model_name,
             )
-            if identity_result is None:
+            if not identity_result:
                 continue
 
-            img = streaming.overlay_identified_face(
+            identity_result.identified_image = streaming.overlay_identified_face(
                 img=img,
                 target_img=identity_result.identified_image,
                 label=identity_result.identified_image_path,
@@ -268,7 +264,7 @@ class DeepFaceHelper:
                 h=h,
             )
 
-        return img
+        return identity_result
 
 
 class MainWindow(QMainWindow):
