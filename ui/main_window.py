@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowuBGHQb.ui'
+## Form generated from reading UI file 'main_windowEFkxKA.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -89,6 +89,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.camera_label.sizePolicy().hasHeightForWidth())
         self.camera_label.setSizePolicy(sizePolicy1)
         self.camera_label.setMinimumSize(QSize(640, 360))
+        self.camera_label.setStyleSheet(u"QPushButton {color: green;}")
         self.camera_label.setFrameShape(QFrame.NoFrame)
         self.camera_label.setText(u"")
         self.camera_label.setTextFormat(Qt.PlainText)
@@ -126,6 +127,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.save_picture_pushbutton.sizePolicy().hasHeightForWidth())
         self.save_picture_pushbutton.setSizePolicy(sizePolicy1)
         self.save_picture_pushbutton.setFont(font)
+        self.save_picture_pushbutton.setStyleSheet(u"QPushButton {color: green;}")
 
         self.horizontalLayout_2.addWidget(self.save_picture_pushbutton)
 

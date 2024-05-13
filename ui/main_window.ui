@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>DeepFace - Example</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>resources/deepface-icon-labeled.png</normaloff>resources/deepface-icon-labeled.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -152,6 +156,9 @@
            <height>360</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {color: green;}</string>
+         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -243,6 +250,9 @@
              <font>
               <pointsize>12</pointsize>
              </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {color: green;}</string>
             </property>
             <property name="text">
              <string>Save picture</string>

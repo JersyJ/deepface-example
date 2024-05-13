@@ -55,7 +55,7 @@ class DeepFaceHelper:
         self.distance_metric = distance_metric
         self.source = source
         self.frame_threshold = frame_threshold
-        self.cap = cv2.VideoCapture(self.source + cv2.CAP_DSHOW)  # webcam (default 0)
+        self.cap = cv2.VideoCapture(self.source + cv2.CAP_DSHOW)  # default 0 + Windows DirectShow (remove on diff OS)
         self.num_frames_with_faces = 0
         self.register_img = None
 
@@ -307,6 +307,7 @@ class MainWindow(QMainWindow):
         self.register_timer.timeout.connect(self.deep_face_helper.capture_camera)
         self.verify_state = ButtonState.INACTIVE
         self.register_state = ButtonState.INACTIVE
+        self.take_picture_state = ButtonState.INACTIVE
         self.ui.register_frame.hide()
 
     def show_opencv_img(self, img):
@@ -368,7 +369,18 @@ class MainWindow(QMainWindow):
             self.ui.register_frame.hide()
 
     def take_picture_pushbutton_click(self):
-        self.register_timer.stop()
+        if self.take_picture_state == ButtonState.INACTIVE:
+            self.register_timer.stop()
+            self.take_picture_state = ButtonState.ACTIVE
+            self.ui.take_picture_pushbutton.setText("Retake picture")
+            self.ui.save_picture_pushbutton.setEnabled(True)
+            self.ui.take_picture_pushbutton.setStyleSheet('QPushButton {color: yellow;}')
+        elif self.take_picture_state == ButtonState.ACTIVE:
+            self.register_timer.start(REGISTER_INTERVAL)
+            self.take_picture_state = ButtonState.INACTIVE
+            self.ui.take_picture_pushbutton.setText("Take picture")
+            self.ui.save_picture_pushbutton.setEnabled(False)
+
 
     def save_picture_pushbutton_click(self):
         self.deep_face_helper.register_face()
