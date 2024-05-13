@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowSgtFpe.ui'
+## Form generated from reading UI file 'main_windowuBGHQb.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
-    QMainWindow, QMenuBar, QPushButton, QSizePolicy,
-    QStatusBar, QVBoxLayout, QWidget)
+    QLayout, QMainWindow, QMenuBar, QPushButton,
+    QSizePolicy, QStatusBar, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -76,12 +76,14 @@ class Ui_MainWindow(object):
         self.camera_frame.setBaseSize(QSize(0, 0))
         self.camera_frame.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
         self.camera_frame.setFrameShape(QFrame.StyledPanel)
-        self.horizontalLayout = QHBoxLayout(self.camera_frame)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.verticalLayout = QVBoxLayout(self.camera_frame)
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(9, 0, 9, 0)
         self.camera_label = QLabel(self.camera_frame)
         self.camera_label.setObjectName(u"camera_label")
         self.camera_label.setEnabled(True)
-        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.camera_label.sizePolicy().hasHeightForWidth())
@@ -92,7 +94,43 @@ class Ui_MainWindow(object):
         self.camera_label.setTextFormat(Qt.PlainText)
         self.camera_label.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout.addWidget(self.camera_label, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+        self.verticalLayout.addWidget(self.camera_label)
+
+        self.register_frame = QWidget(self.camera_frame)
+        self.register_frame.setObjectName(u"register_frame")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.register_frame.sizePolicy().hasHeightForWidth())
+        self.register_frame.setSizePolicy(sizePolicy2)
+        self.register_frame.setMinimumSize(QSize(0, 16))
+        self.register_frame.setFont(font)
+        self.register_frame.setAutoFillBackground(False)
+        self.horizontalLayout_2 = QHBoxLayout(self.register_frame)
+        self.horizontalLayout_2.setSpacing(6)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setSizeConstraint(QLayout.SetDefaultConstraint)
+        self.horizontalLayout_2.setContentsMargins(-1, 0, 9, 7)
+        self.take_picture_pushbutton = QPushButton(self.register_frame)
+        self.take_picture_pushbutton.setObjectName(u"take_picture_pushbutton")
+        sizePolicy1.setHeightForWidth(self.take_picture_pushbutton.sizePolicy().hasHeightForWidth())
+        self.take_picture_pushbutton.setSizePolicy(sizePolicy1)
+        self.take_picture_pushbutton.setMinimumSize(QSize(0, 0))
+        self.take_picture_pushbutton.setFont(font)
+
+        self.horizontalLayout_2.addWidget(self.take_picture_pushbutton)
+
+        self.save_picture_pushbutton = QPushButton(self.register_frame)
+        self.save_picture_pushbutton.setObjectName(u"save_picture_pushbutton")
+        self.save_picture_pushbutton.setEnabled(False)
+        sizePolicy1.setHeightForWidth(self.save_picture_pushbutton.sizePolicy().hasHeightForWidth())
+        self.save_picture_pushbutton.setSizePolicy(sizePolicy1)
+        self.save_picture_pushbutton.setFont(font)
+
+        self.horizontalLayout_2.addWidget(self.save_picture_pushbutton)
+
+
+        self.verticalLayout.addWidget(self.register_frame, 0, Qt.AlignVCenter)
 
 
         self.horizontalLayout_4.addWidget(self.camera_frame, 0, Qt.AlignHCenter)
@@ -116,5 +154,7 @@ class Ui_MainWindow(object):
         self.verify_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Verify", None))
         self.register_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Register", None))
         self.registered_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Registered folder", None))
+        self.take_picture_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Take Picture", None))
+        self.save_picture_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Save picture", None))
     # retranslateUi
 

@@ -57,6 +57,7 @@ class DeepFaceHelper:
         self.frame_threshold = frame_threshold
         self.cap = cv2.VideoCapture(self.source + cv2.CAP_DSHOW)  # webcam (default 0)
         self.num_frames_with_faces = 0
+        self.register_img = None
 
     def face_analysis(self) -> None:
         streaming.build_facial_recognition_model(model_name=self.model_name)
@@ -276,11 +277,11 @@ class DeepFaceHelper:
         return identity_result
 
     def capture_camera(self):
-        has_frame, img = self.cap.read()
+        has_frame, self.register_img = self.cap.read()
         if not has_frame:
             logging.error("Could not read frame from camera")
 
-        window.show_opencv_img(img)
+        window.show_opencv_img(self.register_img)
 
     def register_face(self):
         pass
@@ -294,6 +295,8 @@ class MainWindow(QMainWindow):
         self.ui.verify_pushbutton.clicked.connect(self.verify_pushbutton_click)
         self.ui.register_pushbutton.clicked.connect(self.register_pushbutton_click)
         self.ui.registered_pushbutton.clicked.connect(self.registered_pushbutton_click)
+        self.ui.take_picture_pushbutton.clicked.connect(self.take_picture_pushbutton_click)
+        self.ui.save_picture_pushbutton.clicked.connect(self.save_picture_pushbutton_click)
         self.reset_camera_label()
         self.deep_face_helper = DeepFaceHelper(DATABASE_PATH)
         self.face_analysis_timer = QTimer(self)
@@ -304,6 +307,7 @@ class MainWindow(QMainWindow):
         self.register_timer.timeout.connect(self.deep_face_helper.capture_camera)
         self.verify_state = ButtonState.INACTIVE
         self.register_state = ButtonState.INACTIVE
+        self.ui.register_frame.hide()
 
     def show_opencv_img(self, img):
         convert = QImage(img, img.shape[1], img.shape[0], QImage.Format.Format_BGR888)
@@ -316,7 +320,8 @@ class MainWindow(QMainWindow):
     def reset_register_button(self):
         self.ui.register_pushbutton.setText("Register")
         self.ui.register_pushbutton.setStyleSheet('QPushButton {color: white;}')
-
+    def reset_register_frame(self):
+        self.ui.register_frame.hide()
     def reset_camera_label(self):
         self.ui.camera_label.setPixmap(
             QPixmap("./ui/resources/deepface-icon-labeled.png")
@@ -354,11 +359,19 @@ class MainWindow(QMainWindow):
             self.register_state = ButtonState.ACTIVE
             self.ui.register_pushbutton.setText("Stop camera")
             self.ui.register_pushbutton.setStyleSheet('QPushButton {color: red;}')
+            self.ui.register_frame.show()
         elif self.register_state == ButtonState.ACTIVE:
             self.register_timer.stop()
             self.reset_camera_label()
             self.register_state = ButtonState.INACTIVE
             self.reset_register_button()
+            self.ui.register_frame.hide()
+
+    def take_picture_pushbutton_click(self):
+        self.register_timer.stop()
+
+    def save_picture_pushbutton_click(self):
+        self.deep_face_helper.register_face()
 
     def registered_pushbutton_click(self):
         os.startfile(DATABASE_PATH)
