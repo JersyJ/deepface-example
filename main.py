@@ -202,6 +202,7 @@ class DeepFaceHelper:
     ) -> IdentityResult | None:
         """
         Search an identity in facial database.
+
         Args:
             detected_face (np.ndarray): extracted individual facial image
             db_path (string): Path to the folder containing image files. All detected faces
@@ -213,6 +214,7 @@ class DeepFaceHelper:
                 (default is opencv).
             distance_metric (string): Metric for measuring similarity. Options: 'cosine',
                 'euclidean', 'euclidean_l2' (default is cosine).
+
         Returns:
             identity_result (IdentityResult): identified image path, identified image, distance and threshold
         """

@@ -1,0 +1,59 @@
+site_name: VPBK - Projekt
+site_author: Dominik Lichnovský
+site_description: VPBK - Projekt - Face Recognition
+
+# Repository
+repo_name: deepface-example
+repo_url: https://github.com/JersyJ/deepface-example
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - navigation.expand
+
+    - search.highlight
+    - search.share
+    - search.suggest
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    logo: logo
+
+plugins:
+  - search
+  - mkdocstrings
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - footnotes
+  - meta
+  - md_in_html
+  - tables
+
+nav:
+  - General: index.md
+  - DeepFace: deepface.md
+  - Implementation: implementace.md
+  - Code DeepFaceHelper: code/deepfacehelper.md
+  - Code GUI: code/gui.md

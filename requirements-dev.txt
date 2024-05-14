@@ -3,4 +3,7 @@ black
 pylint
 ruff
 pyqt6-tools
+mkdocs
+mkdocs-material
+mkdocstrings[python]
 -r requirements.txt
