@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowEFkxKA.ui'
+## Form generated from reading UI file 'main_windowOLqpse.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -24,6 +24,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(880, 573)
+        MainWindow.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout_4 = QHBoxLayout(self.centralwidget)
@@ -121,15 +122,15 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.take_picture_pushbutton)
 
-        self.save_picture_pushbutton = QPushButton(self.register_frame)
-        self.save_picture_pushbutton.setObjectName(u"save_picture_pushbutton")
-        self.save_picture_pushbutton.setEnabled(False)
-        sizePolicy1.setHeightForWidth(self.save_picture_pushbutton.sizePolicy().hasHeightForWidth())
-        self.save_picture_pushbutton.setSizePolicy(sizePolicy1)
-        self.save_picture_pushbutton.setFont(font)
-        self.save_picture_pushbutton.setStyleSheet(u"QPushButton {color: green;}")
+        self.register_picture_pushbutton = QPushButton(self.register_frame)
+        self.register_picture_pushbutton.setObjectName(u"register_picture_pushbutton")
+        self.register_picture_pushbutton.setEnabled(False)
+        sizePolicy1.setHeightForWidth(self.register_picture_pushbutton.sizePolicy().hasHeightForWidth())
+        self.register_picture_pushbutton.setSizePolicy(sizePolicy1)
+        self.register_picture_pushbutton.setFont(font)
+        self.register_picture_pushbutton.setStyleSheet(u"QPushButton {color: green;}")
 
-        self.horizontalLayout_2.addWidget(self.save_picture_pushbutton)
+        self.horizontalLayout_2.addWidget(self.register_picture_pushbutton)
 
 
         self.verticalLayout.addWidget(self.register_frame, 0, Qt.AlignVCenter)
@@ -152,11 +153,11 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"DeepFace - Example", None))
         self.verify_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Verify", None))
         self.register_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Register", None))
         self.registered_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Registered folder", None))
         self.take_picture_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Take Picture", None))
-        self.save_picture_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Save picture", None))
+        self.register_picture_pushbutton.setText(QCoreApplication.translate("MainWindow", u"Register picture", None))
     # retranslateUi
 

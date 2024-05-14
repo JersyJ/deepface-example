@@ -13,9 +13,8 @@
   <property name="windowTitle">
    <string>DeepFace - Example</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>resources/deepface-icon-labeled.png</normaloff>resources/deepface-icon-labeled.png</iconset>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -236,7 +235,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="save_picture_pushbutton">
+           <widget class="QPushButton" name="register_picture_pushbutton">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -255,7 +254,7 @@
              <string notr="true">QPushButton {color: green;}</string>
             </property>
             <property name="text">
-             <string>Save picture</string>
+             <string>Register picture</string>
             </property>
            </widget>
           </item>
